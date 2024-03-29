@@ -71,14 +71,17 @@ tree:
     child:
       pipeline:
         - gpu_carbon_estimator
+      defaults:
+        - gpu/name: NVIDIA A100-PCIe-40GB
+        - gpu/power-capacity: 250  # watts
       inputs:
         - timestamp: '2021-01-01T00:00:00Z'
-          duration: 10 # Secs
-          gpu/utilization: 34
+          duration: 10  # secs
+          gpu/power-usage: 34  # watts
         - timestamp: '2021-01-01T00:00:10Z'
-          duration: 10 # Secs
-          gpu/utilization: 51
-      # etc.
+          duration: 10  # secs
+          gpu/power-usage: 51  # watts
+        # etc.
 ```
 
 
