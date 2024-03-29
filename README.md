@@ -43,19 +43,44 @@ For using locally developed model in `IF Framework` please follow these steps:
 1. On the root level of a locally developed model run `npm link`, which will create global package. It uses `package.json` file's `name` field as a package name. Additionally name can be checked by running `npm ls -g --depth=0 --link=true`.
 2. Use the linked model in impl by specifying `name`, `method`, `path` in initialize models section. 
 
+<!-- ```yaml -->
+<!-- name: plugin-demo-link -->
+<!-- description: loads plugin -->
+<!-- tags: null -->
+<!-- initialize: -->
+<!--   plugins: -->
+<!--     my-custom-plugin: -->
+<!--       method: MyCustomPlugin -->
+<!--       path: "<name-field-from-package.json>" -->
+<!--       global-config: -->
+<!--         ... -->
+<!-- ... -->
+<!-- ``` -->
+
 ```yaml
-name: plugin-demo-link
-description: loads plugin
-tags: null
+name: gpu_carbon_estimator_demo
+description: estimates carbon intensity from gpu utilization
+tags:
 initialize:
   plugins:
-    my-custom-plugin:
-      method: MyCustomPlugin
-      path: "<name-field-from-package.json>"
-      global-config:
-        ...
-...
+    'gpu_carbon_estimator':
+      method: GpuCarbonEstimator
+      path: @dukeofjukes/gpu_carbon_estimator
+tree:
+  children:
+    child:
+      pipeline:
+        - gpu_carbon_estimator
+      inputs:
+        - timestamp: '2021-01-01T00:00:00Z'
+          duration: 10 # Secs
+          gpu/utilization: 34
+        - timestamp: '2021-01-01T00:00:10Z'
+          duration: 10 # Secs
+          gpu/utilization: 51
+      # etc.
 ```
+
 
 ### Using directly from Github
 

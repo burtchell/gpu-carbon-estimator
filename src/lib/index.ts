@@ -1,1 +1,1 @@
-export {MyCustomPlugin} from './my-custom-plugin';
+export {GpuCarbonEstimator} from './gpu-carbon-estimator';
