@@ -2,37 +2,75 @@
 import {z} from 'zod';
 
 import {PluginInterface, PluginParams} from '../types/interface';
+// import {ConfigParams, PluginParams} from '../../types';
+
+import {validate} from '../../util/validations';
+import { GpuCarbonEstimatorOutputType, ConfigParams } from './types';
+import { ClimatiqAPI } from './climatiq-api';
+// import {buildErrorMessage} from '../../util/helpers';
+// import {ERRORS} from '../../util/errors';
+
+const climatiqApi = ClimatiqAPI();
 
 export const GpuCarbonEstimator = (
-  // globalConfig: YourGlobalConfig  // TODO: might not need at all
+  globalConfig: ConfigParams,
 ): PluginInterface => {
   const metadata = {
     kind: 'execute',
   };
 
   /**
-   * Execute's strategy description here.
+   * Calculates the output of a given GPU power usage.
    */
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
-      // your logic here
-      // globalConfig;
       const safeInput = Object.assign({}, input, validateInput(input));
-      // TODO: then parse safeInput to get measurements at each timestamp
 
-      return input;
+      const mergedWithConfig = Object.assign(
+        {},
+        input,
+        safeInput,
+        globalConfig
+      )
+
+      const usageResult = await climatiqApi.fetchData(mergedWithConfig);
+
+      return {input, usageResult}
     });
   };
 
+  /**
+   * Fetches data from the Climatiq API.
+   */
+  const fetchData = async (
+    input: PluginParams,
+  ): Promise<GpuCarbonEstimatorOutputType> => {
+    const data = Object.assign({}, input, {usage});
+    const response = await climatiqApi.fetchGpuOutputData(data)
+    const result = formatResponse(response);
+    const outputData: GpuCarbonEstimatorOutputType = {
+      'carbon': result['carbon']
+    }
+
+    return outputData;
+  }
+
   const validateInput = (input: PluginParams) => {
+    // defaults:
+    //   - gpu/name: NVIDIA A100-PCIe-40GB
+    //   - gpu/power-capacity: 250  # watts
+    // inputs:
+    //   - timestamp: '2021-01-01T00:00:00Z'
+    //     duration: 10  # secs
+    //     gpu/power-usage: 34  # watts
+    //   - timestamp: '2021-01-01T00:00:10Z'
+    //     duration: 10  # secs
+    //     gpu/power-usage: 51  # watts
     const schema = z.object({
+        duration: z.number().gt(0),
         'gpu/name': z.string(),
-        // TODO: optionally provide TDP (to handle cases where we don't have it in our DB)
-        'gpu/utilization': z.string(),
+        'gpu/power-usage': z.number(),
       })
-      // .refine(allDefined, {
-      //   message: '`gpu/utilization` should be present.',
-      // });
 
       return validate<z.infer<typeof schema>>(schema, input);
   }
