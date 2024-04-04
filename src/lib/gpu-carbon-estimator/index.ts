@@ -48,7 +48,7 @@ export const GpuCarbonEstimator = (
     const response = await climatiqApi.fetchGpuOutputData(data)
     // const result = formatResponse(response);
     const outputData: GpuCarbonEstimatorOutputType = {
-      'gpu/carbon': result['gpu/carbon']
+      'gpu/carbon': response['co2e'],
     }
 
     return outputData;
