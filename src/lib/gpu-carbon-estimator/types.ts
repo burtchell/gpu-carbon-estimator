@@ -6,4 +6,4 @@ export type KeyValuePair = {
 
 export type GpuCarbonEstimatorOutputType = {
   'gpu/carbon': number;
-}
+};

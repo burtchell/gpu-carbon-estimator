@@ -1,5 +1,4 @@
-import { GpuCarbonEstimator } from '../../../lib';
-import {MyCustomPlugin} from '../../../lib/my-custom-plugin';
+import {GpuCarbonEstimator} from '../../../lib/gpu-carbon-estimator';
 
 describe('lib/gpu-carbon-estimator: ', () => {
   describe('GpuCarbonEstimator(): ', () => {

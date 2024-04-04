@@ -67,4 +67,3 @@ export const validate = <T>(schema: ZodSchema<T>, object: any) => {
 
   return validationResult.data;
 };
-

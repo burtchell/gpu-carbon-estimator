@@ -5,17 +5,20 @@ import {PluginInterface, PluginParams} from '../types/interface';
 // import {ConfigParams, PluginParams} from '../../types';
 
 import {validate} from '../../util/validations';
-import { GpuCarbonEstimatorOutputType, ConfigParams } from './types';
-import { ClimatiqAPI } from './climatiq-api';
+import {
+  GpuCarbonEstimatorOutputType,
+  ConfigParams,
+  KeyValuePair,
+} from './types';
+import {ClimatiqAPI} from './climatiq-api';
 // import {buildErrorMessage} from '../../util/helpers';
 // import {ERRORS} from '../../util/errors';
 
 const climatiqApi = ClimatiqAPI();
 
 export const GpuCarbonEstimator = (
-  globalConfig: ConfigParams,
+  globalConfig: ConfigParams
 ): PluginInterface => {
-
   const metadata = {
     kind: 'execute',
   };
@@ -34,7 +37,7 @@ export const GpuCarbonEstimator = (
       );
       const usageResult = await fetchData(mergedWithConfig);
 
-      return {...input, usageResult}
+      return {...input, usageResult};
     });
   };
 
@@ -42,17 +45,32 @@ export const GpuCarbonEstimator = (
    * Fetches data from the Climatiq API.
    */
   const fetchData = async (
-    input: PluginParams,
+    input: PluginParams
   ): Promise<GpuCarbonEstimatorOutputType> => {
     const data = Object.assign({}, input);
-    const response = await climatiqApi.fetchGpuOutputData(data)
-    // const result = formatResponse(response);
+    const response = await climatiqApi.fetchGpuOutputData(data);
+    const result = formatResponse(response);
     const outputData: GpuCarbonEstimatorOutputType = {
-      'gpu/carbon': response['co2e'],
-    }
+      'gpu/carbon': result['co2e'],
+      // 'gpu/carbon': result.co2e,
+    };
 
     return outputData;
-  }
+  };
+
+  /**
+   * Formats the response by converting units and extracting relevant data.
+   * Coverts the embodied carbon value from kgCO2eq to gCO2eq, defaulting to 0 if 'impacts' is not present.
+   * Converts the energy value from J to kWh, defaulting to 0 if 'impacts' is not present.
+   * 1,000,000 J / 3600 = 277.7777777777778 Wh.
+   * 1 MJ / 3.6 = 0.278 kWh
+   */
+  const formatResponse = (data: KeyValuePair) => {
+    const co2estimatesInData = 'co2e' in data;
+    const co2estimates = co2estimatesInData ? data.co2e : 0;
+
+    return {co2e: co2estimates};
+  };
 
   /**
    * Check for required input fields.
@@ -69,13 +87,13 @@ export const GpuCarbonEstimator = (
     //     duration: 10  # secs
     //     gpu/power-usage: 51  # watts
     const schema = z.object({
-        duration: z.number().gt(0),
-        // 'gpu/name': z.string(),  // not required
-        'gpu/power-usage': z.number(),
-      })
+      duration: z.number().gt(0),
+      // 'gpu/name': z.string(),  // not required
+      'gpu/power-usage': z.number(),
+    });
 
-      return validate<z.infer<typeof schema>>(schema, input);
-  }
+    return validate<z.infer<typeof schema>>(schema, input);
+  };
 
   return {
     metadata,
