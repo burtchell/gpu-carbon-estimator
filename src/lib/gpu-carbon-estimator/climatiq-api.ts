@@ -7,12 +7,16 @@ export const ClimatiqAPI = () => {
 
   /**
    * Fetches GPU output data from Climatiq API.
+   *
+   * duration: seconds
+   * gpu/power-usage: watts
+   * (wattage * duration) / (seconds in an hour) / 1000 = kWh
    */
   const fetchGpuOutputData = async (
     data: KeyValuePair,
   ): Promise<object> => {
     const dataCast = {
-      energy: data['gpu/power-usage'],
+      energy: (data.duration * data['gpu/power-usage']) / 3600 / 1000,
       energy_unit: "kWh"
     }
     const response = await axios.post(

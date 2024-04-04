@@ -15,6 +15,7 @@ const climatiqApi = ClimatiqAPI();
 export const GpuCarbonEstimator = (
   globalConfig: ConfigParams,
 ): PluginInterface => {
+
   const metadata = {
     kind: 'execute',
   };
@@ -25,17 +26,15 @@ export const GpuCarbonEstimator = (
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
       const safeInput = Object.assign({}, input, validateInput(input));
-
       const mergedWithConfig = Object.assign(
         {},
         input,
         safeInput,
         globalConfig
-      )
+      );
+      const usageResult = await fetchData(mergedWithConfig);
 
-      const usageResult = await climatiqApi.fetchData(mergedWithConfig);
-
-      return {input, usageResult}
+      return {...input, usageResult}
     });
   };
 
@@ -47,18 +46,21 @@ export const GpuCarbonEstimator = (
   ): Promise<GpuCarbonEstimatorOutputType> => {
     const data = Object.assign({}, input, {usage});
     const response = await climatiqApi.fetchGpuOutputData(data)
-    const result = formatResponse(response);
+    // const result = formatResponse(response);
     const outputData: GpuCarbonEstimatorOutputType = {
-      'carbon': result['carbon']
+      'gpu/carbon': result['gpu/carbon']
     }
 
     return outputData;
   }
 
+  /**
+   * Check for required input fields.
+   */
   const validateInput = (input: PluginParams) => {
     // defaults:
     //   - gpu/name: NVIDIA A100-PCIe-40GB
-    //   - gpu/power-capacity: 250  # watts
+    //   - gpu/power-capacity: 250  # watts, drop this?
     // inputs:
     //   - timestamp: '2021-01-01T00:00:00Z'
     //     duration: 10  # secs
@@ -68,7 +70,7 @@ export const GpuCarbonEstimator = (
     //     gpu/power-usage: 51  # watts
     const schema = z.object({
         duration: z.number().gt(0),
-        'gpu/name': z.string(),
+        // 'gpu/name': z.string(),  // not required
         'gpu/power-usage': z.number(),
       })
 
