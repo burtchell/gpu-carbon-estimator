@@ -2,6 +2,8 @@ import axios from 'axios';
 
 import {KeyValuePair} from './types';
 
+const { env } = require('node::process');
+
 export const ClimatiqAPI = () => {
   const BASE_URL = "https://api.climatiq.io"
 
@@ -15,14 +17,25 @@ export const ClimatiqAPI = () => {
   const fetchGpuOutputData = async (
     data: KeyValuePair,
   ): Promise<object> => {
-    const dataCast = {
-      energy: (data.duration * data['gpu/power-usage']) / 3600 / 1000,
-      energy_unit: "kWh"
-    }
+    const extra = {
+      headers: {
+        "Authorization": `Bearer ${env.CLIMATIQ_API_KEY}`,
+      },
+    };
+    const body = {
+      emission_factor: {
+       id: "075b570e-62d2-40f7-89e2-252a2ed547c0"  // TODO: this needs to be determined by location
+      },
+      parameters: {
+        energy: (data.duration * data['gpu/power-usage']) / 3600 / 1000,
+        energy_unit: "kWh"
+      }
+    };
     const response = await axios.post(
       `${BASE_URL}/data/v1/estimate`,
-      dataCast
-    )
+      body,
+      extra,
+    );
 
     return response.data;
   }

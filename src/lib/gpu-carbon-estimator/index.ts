@@ -24,7 +24,7 @@ export const GpuCarbonEstimator = (
    * Calculates the output of a given GPU power usage.
    */
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
-    return inputs.map(input => {
+    return inputs.map(async input => {
       const safeInput = Object.assign({}, input, validateInput(input));
       const mergedWithConfig = Object.assign(
         {},
@@ -44,7 +44,7 @@ export const GpuCarbonEstimator = (
   const fetchData = async (
     input: PluginParams,
   ): Promise<GpuCarbonEstimatorOutputType> => {
-    const data = Object.assign({}, input, {usage});
+    const data = Object.assign({}, input);
     const response = await climatiqApi.fetchGpuOutputData(data)
     // const result = formatResponse(response);
     const outputData: GpuCarbonEstimatorOutputType = {
