@@ -54,8 +54,6 @@ export const GpuCarbonEstimator = (
       'gpu/carbon': result.co2e,
     };
 
-    console.log(outputData);
-
     return outputData;
   };
 
@@ -89,7 +87,7 @@ export const GpuCarbonEstimator = (
     //     gpu/power-usage: 51  # watts
     const schema = z.object({
       duration: z.number().gt(0),
-      // 'gpu/name': z.string(),  // not required
+      region: z.string(),
       'gpu/power-usage': z.number(),
     });
 
