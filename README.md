@@ -19,7 +19,7 @@ The plugin uses the [Climatiq](https://www.climatiq.io/) API to retrieve carbon 
 
 - `gpu/carbon`: Estimated GPU carbon emissions in kgCO2.
 
-## Usage
+<!-- ## Usage
 
 To run the `gpu-carbon-estimator` plugin an instance of `GpuCarbonEstimator` must be created using `GpuCarbonEstimator()` and, if applicable, passing global configurations. Subsequently, the `execute()` function can be invoked to retrieve data on `gpu/carbon`.
 
@@ -43,11 +43,27 @@ const response = await gpuCarbonEstimator.execute([
     'gpu/power-usage': 80,
   },
 ]);
-```
+``` -->
 
 ## Example manifest
 
-In IF plugins are expected to be invoked from an `manifest` file. This is a yaml containing the plugin configuration and inputs. The following `manifest` initializes and runs the `gpu-carbon-estimator` plugin:
+First, ensure IF is installed:
+
+```sh
+npm i -g @grnsft/if
+```
+
+Then, clone and link this plugin's repository:
+
+```sh
+git clone git@github.com:dukeofjukes/gpu-carbon-estimator.git && cd gpu-carbon-estimator
+```
+
+```sh
+npm update && npm install && npm link
+```
+
+The following manifest initializes and runs the locally-linked `gpu-carbon-estimator` plugin:
 
 ```yaml
 name: gpu-carbon-estimator-demo
@@ -57,7 +73,7 @@ initialize:
   plugins:
     gpu-carbon-estimator:
       method: GpuCarbonEstimator
-      path: https://github.com/dukeofjukes/gpu-carbon-estimator
+      path: gpu-carbon-estimator
 tree:
   children:
     child:
@@ -74,10 +90,9 @@ tree:
           gpu/power-usage: 80  # watts
 ```
 
-You can run this by passing it to `ie`. Run impact using the following command run from the project root:
+You can run this by passing it to `ie`:
+
 
 ```sh
-npm i -g @grnsft/if
-npm i -g https://github.com/dukeofjukes/gpu-carbon-estimator
 ie --manifest ./path/to/input.yml --output ./path/to/output.yml
 ```
