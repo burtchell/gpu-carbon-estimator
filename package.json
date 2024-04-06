@@ -36,7 +36,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "repository": {
-    "url": "https://github.com/Green-Software-Foundation/if-plugin-template.git"
+    "url": "https://github.com/dukeofjukes/green_carbon_estimator.git"
   },
   "scripts": {
     "build": "npm run clean && tsc --project tsconfig.build.json",
