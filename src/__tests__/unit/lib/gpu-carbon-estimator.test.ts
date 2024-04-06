@@ -64,26 +64,26 @@ describe('lib/gpu-carbon-estimator: ', () => {
         ]);
       });
 
-      it('makes prediction with provided inputs array (multiple inputs).', async () => {
+      it('makes prediction with provided inputs array (multiple inputs, shorter durations).', async () => {
         expect.assertions(1);
 
         const gpuCarbonEstimator = GpuCarbonEstimator({});
         const inputs = [
           {
             timestamp: '2024-01-01T00:00:00Z',
-            duration: 3600,
+            duration: 60,
             region: 'GB',
             'gpu/power-usage': 50,
           },
           {
             timestamp: '2024-01-01T00:01:00Z',
-            duration: 3600,
+            duration: 60,
             region: 'GB',
             'gpu/power-usage': 80,
           },
           {
             timestamp: '2024-01-01T00:02:00Z',
-            duration: 3600,
+            duration: 60,
             region: 'GB',
             'gpu/power-usage': 65,
           },
@@ -92,24 +92,24 @@ describe('lib/gpu-carbon-estimator: ', () => {
         const response = await gpuCarbonEstimator.execute(inputs);
         expect(response).toStrictEqual([
           {
-            'gpu/carbon': 0.01035,
+            'gpu/carbon': 0.0001726,
             'gpu/power-usage': 50,
             region: 'GB',
-            duration: 3600,
+            duration: 60,
             timestamp: '2024-01-01T00:00:00Z',
           },
           {
-            'gpu/carbon': 0.01657,
+            'gpu/carbon': 0.0002761,
             'gpu/power-usage': 80,
             region: 'GB',
-            duration: 3600,
+            duration: 60,
             timestamp: '2024-01-01T00:01:00Z',
           },
           {
-            'gpu/carbon': 0.01346,
+            'gpu/carbon': 0.0002243,
             'gpu/power-usage': 65,
             region: 'GB',
-            duration: 3600,
+            duration: 60,
             timestamp: '2024-01-01T00:02:00Z',
           },
         ]);

@@ -1,61 +1,53 @@
-# if-plugin-template
+# gpu_carbon_estimator
 
-`if-plugin-template` is an environmental impact calculator template which exposes an API for [IF](https://github.com/Green-Software-Foundation/if) to retrieve energy and embodied carbon estimates.
+`gpu_carbon_estimator` estimates the carbon emissions from the energy usage of a GPU, made as a plugin for [IF](https://github.com/Green-Software-Foundation/if).
 
 ## Implementation
 
-Here can be implementation details of the plugin. For example which API is used, transformations and etc.
+The plugin uses the [Climatiq](https://www.climatiq.io/) API to retrieve carbon emission estimations.
+
+## Climatiq API Key
+
+`gpu_carbon_estimator` requires a Climatiq API key, which you can request [here](https://www.climatiq.io/docs/guides/how-tos/getting-api-key). Once you have a key, you must define an environment variable, `$CLIMATIQ_API_KEY=<your-api-key-here>` on your machine.
+
+## Inputs
+
+- `gpu/power-usage`: GPU power usage in watts.
+- `region`: Geographical region where the measurement was recorded. Should be a two-character string according to the [UN/LOCODE code list](https://unece.org/trade/cefact/unlocode-code-list-country-and-territory), i.e., `'US'` for the United States, `'GB'` for Great Britain.
+
+## Returns
+
+- `gpu/carbon`: Estimated GPU carbon emissions in kgCO2.
 
 ## Usage
 
-To run the `<YOUR-CUSTOM-PLUGIN>`, an instance of `PluginInterface` must be created. Then, the plugin's `execute()` method can be called, passing required arguments to it.
+To run the `gpu_carbon_estimator` plugin an instance of `GpuCarbonEstimator` must be created using `GpuCarbonEstimator()` and, if applicable, passing global configurations. Subsequently, the `execute()` function can be invoked to retrieve data on `gpu/carbon`.
 
-This is how you could run the model in Typescript:
+This is how you could run the plugin in Typescript:
 
 ```typescript
-async function runPlugin() {
-  const newModel = await new MyCustomPlugin().configure(params);
-  const usage = await newModel.calculate([
-    {
-      timestamp: '2021-01-01T00:00:00Z',
-      duration: '15s',
-      'cpu-util': 34,
-    },
-    {
-      timestamp: '2021-01-01T00:00:15Z',
-      duration: '15s',
-      'cpu-util': 12,
-    },
-  ]);
+import {GpuCarbonEstimator} from '@dukeofjukes/gpu_carbon_estimator`
 
-  console.log(usage);
-}
-
-runPlugin();
+const gpuCarbonEstimator = GpuCarbonEstimator({});
+const response = await gpuCarbonEstimator.execute([
+  {
+    timestamp: '2024-01-01T00:00:00Z',
+    duration: 60,
+    region: 'GB',
+    'gpu/power-usage': 50,
+  },
+  {
+    timestamp: '2024-01-01T00:01:00Z',
+    duration: 60,
+    region: 'GB',
+    'gpu/power-usage': 80,
+  },
+]);
 ```
 
-## Testing model integration
+## Example manifest
 
-### Using local links
-
-For using locally developed model in `IF Framework` please follow these steps: 
-
-1. On the root level of a locally developed model run `npm link`, which will create global package. It uses `package.json` file's `name` field as a package name. Additionally name can be checked by running `npm ls -g --depth=0 --link=true`.
-2. Use the linked model in impl by specifying `name`, `method`, `path` in initialize models section. 
-
-<!-- ```yaml -->
-<!-- name: plugin-demo-link -->
-<!-- description: loads plugin -->
-<!-- tags: null -->
-<!-- initialize: -->
-<!--   plugins: -->
-<!--     my-custom-plugin: -->
-<!--       method: MyCustomPlugin -->
-<!--       path: "<name-field-from-package.json>" -->
-<!--       global-config: -->
-<!--         ... -->
-<!-- ... -->
-<!-- ``` -->
+In IF plugins are expected to be invoked from an `manifest` file. This is a yaml containing the plugin configuration and inputs. The following `manifest` initializes and runs the `gpu_carbon_estimator` plugin:
 
 ```yaml
 name: gpu_carbon_estimator_demo
@@ -63,57 +55,29 @@ description: estimates carbon intensity from gpu utilization
 tags:
 initialize:
   plugins:
-    'gpu_carbon_estimator':
+    gpu_carbon_estimator:
       method: GpuCarbonEstimator
-      path: @dukeofjukes/gpu_carbon_estimator
+      path: '@dukeofjukes/gpu_carbon_estimator'
 tree:
   children:
     child:
       pipeline:
         - gpu_carbon_estimator
       defaults:
-        - gpu/name: NVIDIA A100-PCIe-40GB
-        - gpu/power-capacity: 250  # watts
+        - region: "GB"
       inputs:
-        - timestamp: '2021-01-01T00:00:00Z'
-          duration: 10  # secs
-          gpu/power-usage: 34  # watts
-        - timestamp: '2021-01-01T00:00:10Z'
-          duration: 10  # secs
-          gpu/power-usage: 51  # watts
-        # etc.
+        - timestamp: '2024-01-01T00:00:00Z',
+          duration: 60,  # seconds
+          gpu/power-usage: 50,  # watts
+        - timestamp: '2024-01-01T00:01:00Z',
+          duration: 60,  # seconds
+          gpu/power-usage: 80,  # watts
 ```
 
-
-### Using directly from Github
-
-You can simply push your model to the public Github repository and pass the path to it in your impl.
-For example, for a model saved in `github.com/my-repo/my-model` you can do the following:
-
-npm install your model: 
-
-```
-npm install -g https://github.com/my-repo/my-model
-```
-
-Then, in your `impl`, provide the path in the model instantiation. You also need to specify which class the model instantiates. In this case you are using the `PluginInterface`, so you can specify `OutputModel`. 
-
-```yaml
-name: plugin-demo-git
-description: loads plugin
-tags: null
-initialize:
-  plugins:
-    my-custom-plugin:
-      method: MyCustomPlugin
-      path: https://github.com/my-repo/my-model
-      global-config:
-        ...
-...
-```
-
-Now, when you run the `manifest` using the IF CLI, it will load the model automatically. Run using:
+You can run this by passing it to `ie`. Run impact using the following command run from the project root:
 
 ```sh
-ie --manifest <path-to-your-impl> --output <path-to-save-output>
+npm i -g @grnsft/if
+npm i -g @dukeofjukes/gpu_carbon_estimator
+ie --manifest ./path/to/input.yml --output ./path/to/output.yml
 ```

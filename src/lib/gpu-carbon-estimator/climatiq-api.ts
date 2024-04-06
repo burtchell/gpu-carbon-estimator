@@ -22,14 +22,13 @@ export const ClimatiqAPI = () => {
     };
     const body = {
       emission_factor: {
-        // id: '075b570e-62d2-40f7-89e2-252a2ed547c0', // TODO: this needs to be determined by location
         activity_id: 'electricity-supply_grid-source_supplier_mix',
         data_version: '^10',
         region: data.region,
       },
       parameters: {
-        energy: (data.duration * data['gpu/power-usage']) / 3600 / 1000,
         energy_unit: 'kWh',
+        energy: (data.duration * data['gpu/power-usage']) / 3600 / 1000,
       },
     };
     const response = await axios.post(
