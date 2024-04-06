@@ -26,7 +26,7 @@ To run the `gpu-carbon-estimator` plugin an instance of `GpuCarbonEstimator` mus
 This is how you could run the plugin in Typescript:
 
 ```typescript
-import {GpuCarbonEstimator} from '@dukeofjukes/gpu_carbon_estimator`
+import {GpuCarbonEstimator} from '@dukeofjukes/gpu-carbon-estimator`
 
 const gpuCarbonEstimator = GpuCarbonEstimator({});
 const response = await gpuCarbonEstimator.execute([
@@ -57,7 +57,7 @@ initialize:
   plugins:
     gpu-carbon-estimator:
       method: GpuCarbonEstimator
-      path: https://github.com/dukeofjukes/gpu_carbon_estimator
+      path: https://github.com/dukeofjukes/gpu-carbon-estimator
 tree:
   children:
     child:
@@ -78,6 +78,6 @@ You can run this by passing it to `ie`. Run impact using the following command r
 
 ```sh
 npm i -g @grnsft/if
-npm i -g https://github.com/dukeofjukes/gpu_carbon_estimator
+npm i -g https://github.com/dukeofjukes/gpu-carbon-estimator
 ie --manifest ./path/to/input.yml --output ./path/to/output.yml
 ```

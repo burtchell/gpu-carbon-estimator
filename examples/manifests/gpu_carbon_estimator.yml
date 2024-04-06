@@ -5,8 +5,7 @@ initialize:
   plugins:
     gpu-carbon-estimator:
       method: GpuCarbonEstimator
-      # path: https://github.com/dukeofjukes/gpu_carbon_estimator
-      path: gpu-carbon-estimator
+      path: https://github.com/dukeofjukes/gpu-carbon-estimator
 tree:
   children:
     child:
