@@ -1,5 +1,5 @@
 name: gpu_carbon_estimator_demo
-description: estimates carbon intensity from gpu utilization
+description: estimates carbon emissions from gpu power usage
 tags:
 initialize:
   plugins:
