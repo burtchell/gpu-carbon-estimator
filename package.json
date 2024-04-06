@@ -36,7 +36,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "repository": {
-    "url": "https://github.com/dukeofjukes/green-carbon-estimator.git"
+    "url": "https://github.com/dukeofjukes/gpu-carbon-estimator.git"
   },
   "scripts": {
     "build": "npm run clean && tsc --project tsconfig.build.json",
