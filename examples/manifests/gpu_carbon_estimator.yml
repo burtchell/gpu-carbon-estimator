@@ -1,16 +1,17 @@
-name: gpu_carbon_estimator_demo
+name: gpu-carbon-estimator-demo
 description: estimates carbon emissions from gpu power usage
 tags:
 initialize:
   plugins:
-    gpu_carbon_estimator:
+    gpu-carbon-estimator:
       method: GpuCarbonEstimator
-      path: https://github.com/dukeofjukes/gpu_carbon_estimator
+      # path: https://github.com/dukeofjukes/gpu_carbon_estimator
+      path: gpu-carbon-estimator
 tree:
   children:
     child:
       pipeline:
-        - gpu_carbon_estimator
+        - gpu-carbon-estimator
       defaults:
         region: "GB"
       inputs:

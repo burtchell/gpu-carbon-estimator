@@ -1,6 +1,6 @@
-# gpu_carbon_estimator
+# gpu-carbon-estimator
 
-`gpu_carbon_estimator` estimates the carbon emissions from the energy usage of a GPU, made as a plugin for [IF](https://github.com/Green-Software-Foundation/if).
+`gpu-carbon-estimator` estimates the carbon emissions from the energy usage of a GPU, made as a plugin for [IF](https://github.com/Green-Software-Foundation/if).
 
 ## Implementation
 
@@ -8,7 +8,7 @@ The plugin uses the [Climatiq](https://www.climatiq.io/) API to retrieve carbon 
 
 ## Climatiq API Key
 
-`gpu_carbon_estimator` requires a Climatiq API key, which you can request [here](https://www.climatiq.io/docs/guides/how-tos/getting-api-key). Once you have a key, you must define an environment variable, `$CLIMATIQ_API_KEY=<your-api-key-here>` on your machine.
+`gpu-carbon-estimator` requires a Climatiq API key, which you can request [here](https://www.climatiq.io/docs/guides/how-tos/getting-api-key). Once you have a key, you must define an environment variable, `$CLIMATIQ_API_KEY=<your-api-key-here>` on your machine.
 
 ## Inputs
 
@@ -21,7 +21,7 @@ The plugin uses the [Climatiq](https://www.climatiq.io/) API to retrieve carbon 
 
 ## Usage
 
-To run the `gpu_carbon_estimator` plugin an instance of `GpuCarbonEstimator` must be created using `GpuCarbonEstimator()` and, if applicable, passing global configurations. Subsequently, the `execute()` function can be invoked to retrieve data on `gpu/carbon`.
+To run the `gpu-carbon-estimator` plugin an instance of `GpuCarbonEstimator` must be created using `GpuCarbonEstimator()` and, if applicable, passing global configurations. Subsequently, the `execute()` function can be invoked to retrieve data on `gpu/carbon`.
 
 This is how you could run the plugin in Typescript:
 
@@ -47,22 +47,22 @@ const response = await gpuCarbonEstimator.execute([
 
 ## Example manifest
 
-In IF plugins are expected to be invoked from an `manifest` file. This is a yaml containing the plugin configuration and inputs. The following `manifest` initializes and runs the `gpu_carbon_estimator` plugin:
+In IF plugins are expected to be invoked from an `manifest` file. This is a yaml containing the plugin configuration and inputs. The following `manifest` initializes and runs the `gpu-carbon-estimator` plugin:
 
 ```yaml
-name: gpu_carbon_estimator_demo
+name: gpu-carbon-estimator-demo
 description: estimates carbon emissions from gpu power usage
 tags:
 initialize:
   plugins:
-    gpu_carbon_estimator:
+    gpu-carbon-estimator:
       method: GpuCarbonEstimator
       path: https://github.com/dukeofjukes/gpu_carbon_estimator
 tree:
   children:
     child:
       pipeline:
-        - gpu_carbon_estimator
+        - gpu-carbon-estimator
       defaults:
         region: "GB"
       inputs:

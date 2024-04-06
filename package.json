@@ -3,8 +3,8 @@
   "description": "Calls the Climatiq API to estimate carbon emissions from GPU power usage.",
   "version": "v0.1.0",
   "author": {
-    "name": "Green Software Foundation",
-    "email": "info@gsf.com"
+    "name": "Brandon Alexander Burtchell",
+    "email": "brandon@burtchell.dev"
   },
   "bugs": {
     "url": "https://github.com/Green-Software-Foundation/if-plugin-template/issues/new?assignees=&labels=feedback&projects=&template=feedback.md&title=Feedback+-+"
