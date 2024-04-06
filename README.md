@@ -51,33 +51,33 @@ In IF plugins are expected to be invoked from an `manifest` file. This is a yaml
 
 ```yaml
 name: gpu_carbon_estimator_demo
-description: estimates carbon intensity from gpu utilization
+description: estimates carbon emissions from gpu power usage
 tags:
 initialize:
   plugins:
     gpu_carbon_estimator:
       method: GpuCarbonEstimator
-      path: '@dukeofjukes/gpu_carbon_estimator'
+      path: https://github.com/dukeofjukes/gpu_carbon_estimator
 tree:
   children:
     child:
       pipeline:
         - gpu_carbon_estimator
       defaults:
-        - region: "GB"
+        region: "GB"
       inputs:
-        - timestamp: '2024-01-01T00:00:00Z',
-          duration: 60,  # seconds
-          gpu/power-usage: 50,  # watts
-        - timestamp: '2024-01-01T00:01:00Z',
-          duration: 60,  # seconds
-          gpu/power-usage: 80,  # watts
+        - timestamp: '2024-01-01T00:00:00Z'
+          duration: 60  # seconds
+          gpu/power-usage: 50  # watts
+        - timestamp: '2024-01-01T00:01:00Z'
+          duration: 60  # seconds
+          gpu/power-usage: 80  # watts
 ```
 
 You can run this by passing it to `ie`. Run impact using the following command run from the project root:
 
 ```sh
 npm i -g @grnsft/if
-npm i -g @dukeofjukes/gpu_carbon_estimator
+npm i -g https://github.com/dukeofjukes/gpu_carbon_estimator
 ie --manifest ./path/to/input.yml --output ./path/to/output.yml
 ```

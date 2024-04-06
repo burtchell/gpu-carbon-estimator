@@ -5,18 +5,18 @@ initialize:
   plugins:
     gpu_carbon_estimator:
       method: GpuCarbonEstimator
-      path: '@dukeofjukes/gpu_carbon_estimator'
+      path: https://github.com/dukeofjukes/gpu_carbon_estimator
 tree:
   children:
     child:
       pipeline:
         - gpu_carbon_estimator
       defaults:
-        - region: "GB"
+        region: "GB"
       inputs:
-        - timestamp: '2024-01-01T00:00:00Z',
-          duration: 60,  # seconds
-          gpu/power-usage: 50,  # watts
-        - timestamp: '2024-01-01T00:01:00Z',
-          duration: 60,  # seconds
-          gpu/power-usage: 80,  # watts
+        - timestamp: '2024-01-01T00:00:00Z'
+          duration: 60  # seconds
+          gpu/power-usage: 50  # watts
+        - timestamp: '2024-01-01T00:01:00Z'
+          duration: 60  # seconds
+          gpu/power-usage: 80  # watts
