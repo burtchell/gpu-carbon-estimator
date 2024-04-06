@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import {KeyValuePair} from './types';
 
-const {env} = require('node::process');
+const {env} = require('node:process');
 
 export const ClimatiqAPI = () => {
   const BASE_URL = 'https://api.climatiq.io';

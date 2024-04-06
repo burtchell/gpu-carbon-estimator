@@ -1,8 +1,6 @@
-// import {YourGlobalConfig} from './types';
 import {z} from 'zod';
 
 import {PluginInterface, PluginParams} from '../types/interface';
-// import {ConfigParams, PluginParams} from '../../types';
 
 import {validate} from '../../util/validations';
 import {
@@ -11,8 +9,6 @@ import {
   KeyValuePair,
 } from './types';
 import {ClimatiqAPI} from './climatiq-api';
-// import {buildErrorMessage} from '../../util/helpers';
-// import {ERRORS} from '../../util/errors';
 
 const climatiqApi = ClimatiqAPI();
 
@@ -24,10 +20,12 @@ export const GpuCarbonEstimator = (
   };
 
   /**
-   * Calculates the output of a given GPU power usage.
+   * Calculates the output carbon emissions of a given GPU power usage.
    */
-  const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
-    return inputs.map(async input => {
+  const execute = async (inputs: PluginParams[]) => {
+    const result = [];
+
+    for await (const input of inputs) {
       const safeInput = Object.assign({}, input, validateInput(input));
       const mergedWithConfig = Object.assign(
         {},
@@ -35,10 +33,12 @@ export const GpuCarbonEstimator = (
         safeInput,
         globalConfig
       );
-      const usageResult = await fetchData(mergedWithConfig);
+      const carbonResult = await fetchData(mergedWithConfig);
 
-      return {...input, usageResult};
-    });
+      result.push({...input, ...carbonResult});
+    }
+
+    return result;
   };
 
   /**
@@ -51,9 +51,10 @@ export const GpuCarbonEstimator = (
     const response = await climatiqApi.fetchGpuOutputData(data);
     const result = formatResponse(response);
     const outputData: GpuCarbonEstimatorOutputType = {
-      'gpu/carbon': result['co2e'],
-      // 'gpu/carbon': result.co2e,
+      'gpu/carbon': result.co2e,
     };
+
+    console.log(outputData);
 
     return outputData;
   };

@@ -1,6 +1,6 @@
 {
-  "name": "if-plugin-template",
-  "description": "Impact Framework plugins template.",
+  "name": "gpu-carbon-estimator",
+  "description": "Calls the Climatiq API to estimate carbon emissions from GPU power usage.",
   "version": "v0.1.0",
   "author": {
     "name": "Green Software Foundation",
